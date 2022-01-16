@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 class TaskCardWidget extends StatelessWidget {
   final String? title;
   final String? desc;
-
-  const TaskCardWidget({Key? key, this.title, this.desc})
-      : super(key: key);
+  TaskCardWidget({Key? key, this.title, this.desc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,5 +47,60 @@ class TaskCardWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class TodoWidget extends StatelessWidget {
+  final String? text;
+  final bool isDone;
+  TodoWidget({Key? key, this.text, required this.isDone}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 24.0,
+        vertical: 8.0,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 20.0,
+            height: 20.0,
+            margin: EdgeInsets.only(
+              right: 12.0,
+            ),
+            decoration: BoxDecoration(
+              color: isDone ? Color(0xFF7349FE) : Colors.transparent,
+              borderRadius: BorderRadius.circular(6.0),
+              border: isDone ? null : Border.all(
+                color: Color(0xFF868290),
+                width: 1.5,
+              ),
+            ),
+            child: Image(
+              image: AssetImage("assets/images/check_icon.png"),
+            ),
+          ),
+          Text(
+            text ?? "(Unnamed Todo)",
+            style: TextStyle(
+              color: isDone ? Color(0xFF211551) : Color(0xFF868290),
+              fontSize: 16.0,
+              fontWeight: isDone ? FontWeight.bold : FontWeight.w500,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class NoGlowBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
