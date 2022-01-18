@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:what_todo/screens/widgets.dart';
+import 'package:what_todo/database_helper.dart';
+import 'package:what_todo/module/task.dart';
+import 'package:what_todo/widgets.dart';
 
 class Taskpage extends StatefulWidget {
   const Taskpage({Key? key}) : super(key: key);
@@ -41,6 +43,18 @@ class _TaskpageState extends State<Taskpage> {
                         ),
                         Expanded(
                           child: TextField(
+                            onSubmitted: (value) async {
+
+                              if(value != "") {
+                                DatabaseHelper _dbHelper = DatabaseHelper();
+
+                                Task _newTask = Task(
+                                  title: value
+                                );
+
+                                await _dbHelper.insertTask(_newTask);
+                              }
+                            },
                             decoration: InputDecoration(
                               hintText: "Enter Task Title",
                               border: InputBorder.none,

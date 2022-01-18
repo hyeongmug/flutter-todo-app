@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:what_todo/database_helper.dart';
+import 'package:what_todo/module/task.dart';
 import 'package:what_todo/screens/taskpage.dart';
-import 'package:what_todo/screens/widgets.dart';
+import 'package:what_todo/widgets.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,22 +39,22 @@ class _HomepageState extends State<Homepage> {
                     child: Image(image: AssetImage('assets/images/logo.png')),
                   ),
                   Expanded(
-                    child: ScrollConfiguration(
-                      behavior: NoGlowBehaviour(),
-                      child: ListView(
-                        children: [
-                          TaskCardWidget(
-                            title: "Get Started!",
-                            desc:
-                            "Hello User!, Welcome to WHAT_TODO app. this is a default task that you can edit or delete to start using the app.",
+                    child: FutureBuilder(
+                      future: _dbHelper.getTasks(),
+                      builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
+                        return ScrollConfiguration(
+                          behavior: NoGlowBehaviour(),
+                          child: ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return TaskCardWidget(
+                                title: snapshot.data![index].title,
+                              );
+                            },
                           ),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                        ],
-                      ),
-                    )
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -61,10 +65,10 @@ class _HomepageState extends State<Homepage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => Taskpage()
-                      ),
-                    );
+                      MaterialPageRoute(builder: (context) => Taskpage()),
+                    ).then((value) {
+                      setState(() {});
+                    });
                   },
                   child: Container(
                     width: 60.0,
